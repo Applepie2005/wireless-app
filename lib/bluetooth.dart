@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
 class BluetoothScreen extends StatefulWidget {
   @override
   _BluetoothScreenState createState() => _BluetoothScreenState();
@@ -16,10 +15,10 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
   void initState() {
     super.initState();
     scanForDevices();
-    pedirPermisos().then((_) {
-      // You can start scanning after permissions are granted
-      scanForDevices();
-    });
+    // pedirPermisos().then((_) {
+    //   // You can start scanning after permissions are granted
+    //   scanForDevices();
+    // });
   }
 
   Future<void> pedirPermisos() async {
@@ -31,7 +30,6 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
   }
 
   void scanForDevices() {
-
     FlutterBluePlus.startScan(timeout: Duration(seconds: 5));
     FlutterBluePlus.scanResults.listen((results) {
       for (ScanResult r in results) {
@@ -46,21 +44,28 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Bluetooth Devices")),
-      body: ListView.builder(
-        itemCount: scanResults.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(scanResults[index].device.advName),
-            subtitle: Text(scanResults[index].hashCode.toString()),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: scanForDevices,
-        child: Icon(Icons.bluetooth),
-      ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton.icon(
+            onPressed: scanForDevices,
+            icon: Icon(Icons.bluetooth),
+            label: Text("Buscar dispositivos"),
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: scanResults.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(scanResults[index].device.advName),
+                subtitle: Text(scanResults[index].hashCode.toString()),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
