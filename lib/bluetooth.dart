@@ -10,12 +10,16 @@ class BluetoothScreen extends StatefulWidget {
 
 class _BluetoothScreenState extends State<BluetoothScreen> {
   final FlutterBluePlus flutterBlue = FlutterBluePlus();
-  List<BluetoothDevice> devices = [];
+  List<ScanResult> scanResults = [];
 
   @override
   void initState() {
     super.initState();
     scanForDevices();
+    pedirPermisos().then((_) {
+      // You can start scanning after permissions are granted
+      scanForDevices();
+    });
   }
 
   Future<void> pedirPermisos() async {
@@ -31,9 +35,9 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     FlutterBluePlus.startScan(timeout: Duration(seconds: 5));
     FlutterBluePlus.scanResults.listen((results) {
       for (ScanResult r in results) {
-        if (!devices.contains(r.device)) {
+        if (!scanResults.any((element) => element.device.id == r.device.id)) {
           setState(() {
-            devices.add(r.device);
+            scanResults.add(r);
           });
         }
       }
@@ -45,11 +49,11 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     return Scaffold(
       appBar: AppBar(title: Text("Bluetooth Devices")),
       body: ListView.builder(
-        itemCount: devices.length,
+        itemCount: scanResults.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(devices[index].advName),
-            subtitle: Text(devices[index].hashCode.toString()),
+            title: Text(scanResults[index].device.advName),
+            subtitle: Text(scanResults[index].hashCode.toString()),
           );
         },
       ),
