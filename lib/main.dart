@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'services/wifi_service.dart';
+import 'services/permission_handler.dart';
 import 'wifi_manager.dart';
 
 void main() {
@@ -12,6 +12,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Wi-Fi Control App',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+      ),
       home: WifiPage(),
     );
   }
