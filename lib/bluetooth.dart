@@ -33,7 +33,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     FlutterBluePlus.startScan(timeout: Duration(seconds: 5));
     FlutterBluePlus.scanResults.listen((results) {
       for (ScanResult r in results) {
-        if (!scanResults.any((element) => element.device.id == r.device.id)) {
+        if (!scanResults.any((element) => element.device.remoteId == r.device.remoteId)) {
           setState(() {
             scanResults.add(r);
           });
@@ -59,8 +59,10 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
             itemCount: scanResults.length,
             itemBuilder: (context, index) {
               return ListTile(
-                title: Text(scanResults[index].device.advName),
-                subtitle: Text(scanResults[index].hashCode.toString()),
+                title: Text(scanResults[index].device.advName .isNotEmpty
+                    ? scanResults[index].device.advName
+                    : "Dispositivo desconocido"),
+                subtitle: Text(scanResults[index].device.remoteId.toString()),
               );
             },
           ),
